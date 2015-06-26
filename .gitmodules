@@ -1,0 +1,3 @@
+[submodule "relmeauth"]
+	path = relmeauth
+	url = https://github.com/dissolve/RelMeAuth
