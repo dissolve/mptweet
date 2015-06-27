@@ -1,3 +1,12 @@
-[submodule "relmeauth"]
-	path = relmeauth
+[submodule "libraries/php-mf2"]
+	path = libraries/php-mf2
+	url = https://github.com/dissolve/php-mf2
+[submodule "libraries/link-rel-parser-php"]
+	path = libraries/link-rel-parser-php
+	url = https://github.com/indieweb/link-rel-parser-php
+[submodule "libraries/indieauth-client-php"]
+	path = libraries/indieauth-client-php
+	url = https://github.com/indieweb/indieauth-client-php
+[submodule "libraries/relmeauth"]
+	path = libraries/relmeauth
 	url = https://github.com/dissolve/RelMeAuth

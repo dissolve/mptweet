@@ -1,6 +1,6 @@
 <?php
 
-require_once( __DIR__ . '/relmeauth/lib/relmeauth.php');
+require_once( __DIR__ . '/libraries/relmeauth/lib/relmeauth.php');
 $relmeauth = new relmeauth();
 $error = false;
 
@@ -19,11 +19,11 @@ elseif ( isset($_REQUEST['oauth_verifier'] ) ) {
     die();
   }
 }
-else if (isset($_REQUEST['denied'] ) ) {
+elseif (isset($_REQUEST['denied'] ) ) {
   // user cancelled login
   $relmeauth->error('Sign in cancelled.');
 }
-else if ( isset($_POST['url']) ) {
+elseif ( isset($_POST['url']) ) {
   $user_url = strip_tags( stripslashes( $_POST['url'] ) );
 
   $user_site = parse_url($user_url);
@@ -40,8 +40,19 @@ else if ( isset($_POST['url']) ) {
     die();
   }
 }
-else if ($relmeauth->is_loggedin()) {
-  $relmeauth->create_from_session();
+elseif ( isset($_SESSION['token']) ) {
+  echo 'token = ' . $_SESSION['token'];
+}
+elseif ( isset($_GET['conf']) ) {
+  $me = 'https://relmeauth.thatmustbe.me';
+  $relmeauth = new indieAuthRegister();
+  $relmeauth->tokencallback($me,$me.'?conf=tok');
+}
+elseif ($relmeauth->is_loggedin()) {
+  //$relmeauth->create_from_session();
+  $me = 'https://relmeauth.thatmustbe.me';
+  $relmeauth = new indieAuthRegister();
+  $relmeauth->startReg($me,$me.'?conf=tok');
 }
 
 function _e($content) {
