@@ -1,6 +1,7 @@
 <?php
 
 require_once( __DIR__ . '/libraries/relmeauth/lib/relmeauth.php');
+require_once( __DIR__ . '/mp.php');
 $relmeauth = new relmeauth();
 $error = false;
 

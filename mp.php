@@ -1,22 +1,22 @@
 
 <?php  
 
-require_once __DIR__ . 'libraries/php-mf2/Mf2/Parser.php';
-require_once __DIR__ . 'libraries/link-rel-parser-php/src/IndieWeb/link_rel_parser.php';
-require_once __DIR__ . 'libraries/indieauth-client-php/src/IndieAuth/Client.php';
+require_once __DIR__ . '/libraries/php-mf2/Mf2/Parser.php';
+require_once __DIR__ . '/libraries/link-rel-parser-php/src/IndieWeb/link_rel_parser.php';
+require_once __DIR__ . '/libraries/indieauth-client-php/src/IndieAuth/Client.php';
 
 class indieAuthRegister {
 
-    function __construct(){
+    public function __construct(){
     }
-    function startReg($me, $redir_url, $fail_url = false) {
+    public function startReg($me, $redir_url, $fail_url = false) {
         $scope = 'register';
         
         $me = $this->normalize_url($me);
 
         if(!$fail_url){
             $fail_url = $this->here();
-        {
+        }
 
         //look up user's auth provider
         $auth_endpoint = IndieAuth\Client::discoverAuthorizationEndpoint($me);
