@@ -105,7 +105,7 @@ class indieAuthRegister {
 
     private function confirm_auth( $me, $code, $redir, $state = null ) {
         
-        $client_id = $this->url->link('');
+        $client_id = $this->here();
 
         //look up user's auth provider
         $auth_endpoint = IndieAuth\Client::discoverAuthorizationEndpoint($me);
@@ -150,7 +150,7 @@ class indieAuthRegister {
 
     private function get_token( $me, $code, $redir, $state = null ) {
         
-        $client_id = $this->url->link('');
+        $client_id = $this->here();
 
         //look up user's token provider
         $token_endpoint = IndieAuth\Client::discoverTokenEndpoint($me);

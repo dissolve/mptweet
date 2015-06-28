@@ -45,15 +45,15 @@ elseif ( isset($_SESSION['token']) ) {
   echo 'token = ' . $_SESSION['token'];
 }
 elseif ( isset($_GET['conf']) ) {
-  $me = 'https://relmeauth.thatmustbe.me';
+  $me = 'http://relmeauth.thatmustbe.me';
   $relmeauth = new indieAuthRegister();
-  $relmeauth->tokencallback($me,$me.'?conf=tok');
+  $relmeauth->tokencallback($_SESSION['relmeauth']['url'],$me.'?conf=tok');
 }
 elseif ($relmeauth->is_loggedin()) {
   //$relmeauth->create_from_session();
-  $me = 'https://relmeauth.thatmustbe.me';
+  $me = 'http://relmeauth.thatmustbe.me';
   $relmeauth = new indieAuthRegister();
-  $relmeauth->startReg($me,$me.'?conf=tok');
+  $relmeauth->startReg($_SESSION['relmeauth']['url'],$me.'?conf=tok');
 }
 
 function _e($content) {
