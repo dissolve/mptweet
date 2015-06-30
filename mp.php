@@ -4,6 +4,7 @@
 require_once __DIR__ . '/libraries/php-mf2/Mf2/Parser.php';
 require_once __DIR__ . '/libraries/link-rel-parser-php/src/IndieWeb/link_rel_parser.php';
 require_once __DIR__ . '/libraries/indieauth-client-php/src/IndieAuth/Client.php';
+require_once __DIR__ . '/cache.php';
 
 class indieAuthRegister {
 
@@ -70,7 +71,6 @@ class indieAuthRegister {
             // we successfullly confirmed auth
             $_SESSION['user_site'] = $_GET['me'];
 
-            //TODO token stuff
             $token_results = $this->get_token($me, $code, $redir_url, $state);
 
             $_SESSION['token'] = $token_results['access_token'];
@@ -78,10 +78,16 @@ class indieAuthRegister {
 
             if($mp_endpoint){
                 //$ch = curl_init($mp_endpoint.'?q=actions');
-                $ch = curl_init($mp_endpoint.'?q=actions');
+                $code = '';
+
+                save_data($me, 'auth.'.$code, array());
+                //save data to date
+
+                $ch = curl_init($mp_endpoint.'?register=1&me='.$this->here().'&redirect_uri='.$this->here().'&client_id='. $me. '&code='.$code);
 
                 //if(!$ch){$this->log->write('error with curl_init');}
 
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer '. $token));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
@@ -90,10 +96,13 @@ class indieAuthRegister {
                 if($result == 200){
                     $_SESSION['mp-config'] = $response;
                 }
-            }
 
             $_SESSION['success'] = "You are now logged in as ".$_GET['me'];
             header( "Location: $success_url" );
+            }
+
+            $_SESSION['error'] = 'Did not find your Micropub Endpoint.';
+            header( "Location: $fail_url" );
             die();
         } else {
             $_SESSION['error'] = 'Authorization Step Failed.';
