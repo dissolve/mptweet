@@ -7,8 +7,10 @@ require_once __DIR__ . '/libraries/indieauth-client-php/src/IndieAuth/Client.php
 require_once __DIR__ . '/cache.php';
 
 class indieAuthRegister {
+    $storage = null;
 
     public function __construct(){
+        $this->storage = new storage();
     }
     public function startReg($me, $redir_url, $fail_url = false) {
         $scope = 'register';
@@ -52,6 +54,50 @@ class indieAuthRegister {
             
     }
 
+    public function dataFromToken($token){
+        $token_data = $this->storage->get_data('token.'.$token);
+        if($token_data && $token_data['active']){
+            return $token_data;
+        } else {
+            return array();
+        }
+
+    }
+    public function tokenEndpoint(){
+        if(isset($_POST['code']) && 
+            isset($_POST['me']) &&
+            isset($_POST['redirect_uri'])){
+
+            $data = $this->storage->get_data('auth.'.$_POST['code'])
+
+
+            if($data['me'] == $_POST['me'] && $data['redirect_uri'] == $_POST['redirect_uri']){
+
+                $token_data = $this->storage->get_data('token.'.$data['token']);
+                if(!$token_data){
+                    header('HTTP/1.1 500 Server Error');
+                    exit();
+                }
+                $this->storage->delete_data('auth.'.$data['auth']);
+                $token_data['active'] = true;
+                $this->storage->save_data('token.'.$data['token'], $token_data);
+
+
+                $this->response->setOutput(http_build_query(array(
+                    'access_token' => $token_data['token'],
+                    'scope' => $token_data['scope'],
+                    'me' => $token_data['me'])));
+            } else {
+                header('HTTP/1.1 400 Bad Request');
+                exit();
+            }
+        } else {
+            header('HTTP/1.1 400 Bad Request');
+            exit();
+        }
+
+    }
+
 	public function tokencallback( $me, $redir_url, $success_url = false, $fail_url = false) {
         // first figure out where we are going after we process
         if(!$success_url){
@@ -78,16 +124,28 @@ class indieAuthRegister {
 
             if($mp_endpoint){
                 //$ch = curl_init($mp_endpoint.'?q=actions');
-                $code = '';
+                $code = md5(uniqid(rand()));
+                $token = md5(uniqid(rand(), TRUE));
 
-                save_data($me, 'auth.'.$code, array());
+                $data = array('token' => $token,
+                              'active' => false,
+                              'scope' => 'write',
+                              'client_id' => $me,
+                              'me' => $this->here(),
+                              'redirect_uri' => $this->here(),
+                              'provider' => $SESSION['relmeauth']['provider'],
+                              'user_token' => $_SESSION['relmeauth']['access']['oauth_token'],
+                              'user_secret' => $_SESSION['relmeauth']['access']['oauth_token_secret']);
+
+                $this->storage->save_data('auth.'.$code, $data);
+                $this->storage->save_data('token.'.$token, $data);
                 //save data to date
 
                 $ch = curl_init($mp_endpoint.'?register=1&me='.$this->here().'&redirect_uri='.$this->here().'&client_id='. $me. '&code='.$code);
 
                 //if(!$ch){$this->log->write('error with curl_init');}
 
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer '. $token));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer '. $_SESSION['token']));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 

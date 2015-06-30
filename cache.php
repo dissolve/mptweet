@@ -1,8 +1,8 @@
 <?php
 class storage {
 
-  function delete_data($user_url, $mp_token){
-    $key = $user_url . '_'.$mp_token.'_'. md5sum($user_url .$mp_token);
+  function delete_data($label){
+    $key = $label . '_'. md5sum($label);
     $files = glob(__DIR__ . '/cache.' . preg_replace('/[^A-Z0-9\._-]/i', '', $key) );
 
     if ($files) {
@@ -14,16 +14,17 @@ class storage {
     }
   }
 
-  function save_data($user_url, $mp_token, $data){
-    $key = $user_url . '_'.$mp_token.'_'. md5sum($user_url .$mp_token);
+  function save_data($label, $data){
+    $this->delete_data($label);
+    $key = $label . '_'. md5sum($label);
     $file = __DIR__ . '/cache.' . preg_replace('/[^A-Z0-9\._-]/i', '', $key);
     $handle = fopen($file, 'w');
     fwrite($handle, serialize($data));
     fclose($handle);
   }
 
-  function get_data($user_url, $mp_token){
-    $key = $user_url . '_'.$mp_token.'_'. md5sum($user_url .$mp_token);
+  function get_data($label){
+    $key = $label .'_'. md5sum($label);
     $files = glob(__DIR__ . '/cache.' . preg_replace('/[^A-Z0-9\._-]/i', '', $key) );
     if ($files) {
       $handle = fopen($files[0], 'r');
