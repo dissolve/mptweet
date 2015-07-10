@@ -2,6 +2,10 @@
 
 require_once( __DIR__ . '/libraries/relmeauth/lib/relmeauth.php');
 require_once( __DIR__ . '/mp.php');
+
+$me = 'http://relmeauth.thatmustbe.me';
+$mp_endpoint = $me .'/endpoint.php'
+
 $relmeauth = new relmeauth();
 $error = false;
 
@@ -45,13 +49,11 @@ elseif ( isset($_SESSION['token']) ) {
   echo 'token = ' . $_SESSION['token'];
 }
 elseif ( isset($_GET['conf']) ) {
-  $me = 'http://relmeauth.thatmustbe.me';
   $relmeauth = new indieAuthRegister();
   $relmeauth->tokencallback($_SESSION['relmeauth']['url'],$me.'?conf=tok');
 }
 elseif ($relmeauth->is_loggedin()) {
   //$relmeauth->create_from_session();
-  $me = 'http://relmeauth.thatmustbe.me';
   $relmeauth = new indieAuthRegister();
   $relmeauth->startReg($_SESSION['relmeauth']['url'],$me.'?conf=tok');
 }
@@ -65,6 +67,7 @@ function _e($content) {
 <head>
   <meta charset="utf-8" />
   <title>RelMeAuth prototype</title>
+  <link rel="micropub" href="<?php echo $mp_endpoint?>" />
   <script src="cassis/cassis.js" type="text/javascript" charset="utf-8"></script>
   <style type="text/css" media="all">
     body {
