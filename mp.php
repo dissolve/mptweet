@@ -128,7 +128,7 @@ class indieAuthRegister {
                 //$code = md5(uniqid(rand()));
                 $token = md5(uniqid(rand(), TRUE));
 
-                $data = array('token' => $token,
+                $data = array(//'token' => $token,
                               //'active' => false,
                               //'scope' => 'write',
                               //'client_id' => $me,
