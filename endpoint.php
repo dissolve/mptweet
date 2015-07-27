@@ -39,12 +39,12 @@ if (isset($_POST['content'])) {
 
   if ($tmhOAuth->response['code'] == 200) {
 
-      $respons_obj = json_decode($tmhOAuth->response['response']);
+      $response_obj = json_decode($tmhOAuth->response['response']);
       $permalink =  "https://twitter.com/".$response_obj->user->id."/status/".$response_obj->id;
 
-      $header('HTTP/1.1 201 Created');
-      $header('Location: '. $permalink);
-      echo $permalink
+      header('HTTP/1.1 201 Created');
+      header('Location: '. $permalink);
+      echo $permalink;
   } else {
       header('HTTP/1.1 401 Unauthorized');
       exit();
