@@ -50,9 +50,10 @@ elseif ( isset($_POST['url']) ) {
     die();
   }
 }
-//elseif ( isset($_SESSION['token']) ) {
+elseif ( isset($_SESSION['token']) ) {
   //echo 'token = ' . $_SESSION['token'];
-//}
+    ;
+}
 elseif ( isset($_GET['conf']) ) {
   $relmeauth = new indieAuthRegister();
   $relmeauth->tokencallback($_SESSION['relmeauth']['url'],$me.'?conf=tok');

@@ -12,7 +12,7 @@ $error = false;
 
 $token = $_POST['access_token'];
 if(!$token){
-    $parts = explode(' ', $_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+    $parts = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
     $token = $parts[1];
 }
 if(!$token){
@@ -34,7 +34,8 @@ if (isset($_POST['content'])) {
         //$this->response->addHeader('HTTP/1.1 200 OK');
   //TODO: return URL correctly
 
-      print_r(json_decode($tmhOAuth->response['response']));
+      $respons_obj = json_decode($tmhOAuth->response['response']);
+      echo "https://twitter.com/".$response_obj->user->id."/status/".$response_obj->id;
   } else {
   //TODO: error correctly
         //$this->response->addHeader('HTTP/1.1 500 Error');

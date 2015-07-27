@@ -55,7 +55,7 @@ class indieAuthRegister {
 
     public function dataFromToken($token){
         $token_data = $this->storage->get_data('token.'.$token);
-        if($token_data && $token_data['active']){
+        if($token_data){
             return $token_data;
         } else {
             return array();
