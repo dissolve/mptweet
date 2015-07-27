@@ -6,9 +6,8 @@ require_once __DIR__ . '/libraries/link-rel-parser-php/src/IndieWeb/link_rel_par
 require_once __DIR__ . '/libraries/indieauth-client-php/src/IndieAuth/Client.php';
 require_once __DIR__ . '/cache.php';
 
-class indieAuthRegister {
-    $storage = null;
 
+class indieAuthRegister {
     public function __construct(){
         $this->storage = new storage();
     }
@@ -63,12 +62,13 @@ class indieAuthRegister {
         }
 
     }
+    /*
     public function tokenEndpoint(){
         if(isset($_POST['code']) && 
             isset($_POST['me']) &&
             isset($_POST['redirect_uri'])){
 
-            $data = $this->storage->get_data('auth.'.$_POST['code'])
+            $data = $this->storage->get_data('auth.'.$_POST['code']);
 
 
             if($data['me'] == $_POST['me'] && $data['redirect_uri'] == $_POST['redirect_uri']){
@@ -97,6 +97,7 @@ class indieAuthRegister {
         }
 
     }
+*/
 
 	public function tokencallback( $me, $redir_url, $success_url = false, $fail_url = false) {
         // first figure out where we are going after we process
@@ -124,24 +125,24 @@ class indieAuthRegister {
 
             if($mp_endpoint){
                 //$ch = curl_init($mp_endpoint.'?q=actions');
-                $code = md5(uniqid(rand()));
+                //$code = md5(uniqid(rand()));
                 $token = md5(uniqid(rand(), TRUE));
 
                 $data = array('token' => $token,
-                              'active' => false,
-                              'scope' => 'write',
-                              'client_id' => $me,
-                              'me' => $this->here(),
-                              'redirect_uri' => $this->here(),
+                              //'active' => false,
+                              //'scope' => 'write',
+                              //'client_id' => $me,
+                              //'me' => $this->here(),
+                              //'redirect_uri' => $this->here(),
                               'provider' => $SESSION['relmeauth']['provider'],
                               'user_token' => $_SESSION['relmeauth']['access']['oauth_token'],
                               'user_secret' => $_SESSION['relmeauth']['access']['oauth_token_secret']);
 
-                $this->storage->save_data('auth.'.$code, $data);
+                //$this->storage->save_data('auth.'.$code, $data);
                 $this->storage->save_data('token.'.$token, $data);
                 //save data to date
 
-                $ch = curl_init($mp_endpoint.'?register=1&me='.$this->here().'&redirect_uri='.$this->here().'&client_id='. $me. '&code='.$code);
+                $ch = curl_init($mp_endpoint.'?register='.$this->here() . '&register_token='.$token);
 
                 //if(!$ch){$this->log->write('error with curl_init');}
 
@@ -155,13 +156,13 @@ class indieAuthRegister {
                     $_SESSION['mp-config'] = $response;
                 }
 
-            $_SESSION['success'] = "You are now logged in as ".$_GET['me'];
-            header( "Location: $success_url" );
+                $_SESSION['success'] = "You are now logged in as ".$_GET['me'];
+                header( "Location: $success_url" );
+            } else {
+                $_SESSION['error'] = 'Did not find your Micropub Endpoint.';
+                header( "Location: $fail_url" );
+                die();
             }
-
-            $_SESSION['error'] = 'Did not find your Micropub Endpoint.';
-            header( "Location: $fail_url" );
-            die();
         } else {
             $_SESSION['error'] = 'Authorization Step Failed.';
             header( "Location: $fail_url" );

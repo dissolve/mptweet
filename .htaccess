@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^$ endpoint.php [L,QSA,E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteRule ^endpoint.php$ endpoint.php [L,QSA,E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

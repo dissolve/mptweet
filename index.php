@@ -4,10 +4,15 @@ require_once( __DIR__ . '/libraries/relmeauth/lib/relmeauth.php');
 require_once( __DIR__ . '/mp.php');
 
 $me = 'http://relmeauth.thatmustbe.me';
-$mp_endpoint = $me .'/endpoint.php'
+$mp_endpoint = $me .'/endpoint.php';
 
 $relmeauth = new relmeauth();
 $error = false;
+
+if (isset($_SESSION['error'])){
+    echo $_SESSION['error'];
+    unset($_SESSION['error']);
+}
 
 if ( isset($_GET['logout']) ) {
   session_destroy();
@@ -45,9 +50,9 @@ elseif ( isset($_POST['url']) ) {
     die();
   }
 }
-elseif ( isset($_SESSION['token']) ) {
-  echo 'token = ' . $_SESSION['token'];
-}
+//elseif ( isset($_SESSION['token']) ) {
+  //echo 'token = ' . $_SESSION['token'];
+//}
 elseif ( isset($_GET['conf']) ) {
   $relmeauth = new indieAuthRegister();
   $relmeauth->tokencallback($_SESSION['relmeauth']['url'],$me.'?conf=tok');
