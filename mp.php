@@ -134,7 +134,7 @@ class indieAuthRegister {
                               //'client_id' => $me,
                               //'me' => $this->here(),
                               //'redirect_uri' => $this->here(),
-                              'provider' => $SESSION['relmeauth']['provider'],
+                              'provider' => $_SESSION['relmeauth']['provider'],
                               'user_token' => $_SESSION['relmeauth']['access']['oauth_token'],
                               'user_secret' => $_SESSION['relmeauth']['access']['oauth_token_secret']);
 
