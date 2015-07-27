@@ -19,6 +19,13 @@ if(!$token){
     $parts = explode(' ', $headers['Authorization']);
     $token = $parts[1];
 }
+
+if(!$token){
+      header('HTTP/1.1 401 Unauthorized');
+      exit();
+}
+
+
 $storage = new storage();
 $token_data = $storage->get_data('token.'.$token);
 
@@ -31,15 +38,16 @@ if (isset($_POST['content'])) {
   ));
 
   if ($tmhOAuth->response['code'] == 200) {
-        //$this->response->addHeader('HTTP/1.1 200 OK');
-  //TODO: return URL correctly
 
       $respons_obj = json_decode($tmhOAuth->response['response']);
-      echo "https://twitter.com/".$response_obj->user->id."/status/".$response_obj->id;
+      $permalink =  "https://twitter.com/".$response_obj->user->id."/status/".$response_obj->id;
+
+      $header('HTTP/1.1 201 Created');
+      $header('Location: '. $permalink);
+      echo $permalink
   } else {
-  //TODO: error correctly
-        //$this->response->addHeader('HTTP/1.1 500 Error');
-      print_r($tmhOAuth->response['response']);
+      header('HTTP/1.1 401 Unauthorized');
+      exit();
   }
 } // /user posted
 
